@@ -1,5 +1,15 @@
 <?php
 session_start();
+
+
+if(isset($_SESSION["locked"])){
+  $difference = time() - $_SESSION["locked"];
+  if($difference > 10) {
+    unset($_SESSION["locked"]);
+    unset($_SESSION["login_attempts"]);
+  }
+}
+
 $con=mysqli_connect("localhost","root","","myhmsdb");
 if(isset($_POST['docsub1'])){
 	$dname=$_POST['username3'];
@@ -15,6 +25,7 @@ if(isset($_POST['docsub1'])){
         $_SESSION['dpass']=$row['password'];
         header("Location:doctor-panel.php");
       }else{
+        $_SESSION["login_attempts"] += 1;
         echo("<script>alert('Username, Password does not match. Try Again!');
           window.location.href = 'index.php';</script>");
       }      
@@ -22,6 +33,7 @@ if(isset($_POST['docsub1'])){
 	
 	}
 	else{
+    $_SESSION["login_attempts"] += 1;
     // header("Location:error2.php");
     echo("<script>alert('Invalid Username or Password. Try Again!');
           window.location.href = 'index.php';</script>");

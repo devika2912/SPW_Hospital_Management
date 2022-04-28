@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <?php 
+session_start();
+
+if((time() - $_SESSION['last_login_timestamp']) > 60) // 900 = 15 * 60  
+{  
+    header("location:logout.php");  
+}  
+  else  
+{  
+    $_SESSION['last_login_timestamp'] = time();  
+} 
+
 $con=mysqli_connect("localhost","root","","myhmsdb");
 
 include('newfunc.php');

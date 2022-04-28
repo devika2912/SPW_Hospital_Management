@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <?php 
 include('func1.php');
+
+if((time() - $_SESSION['last_login_timestamp']) > 60) // 900 = 15 * 60  
+{  
+    header("location:logout.php");  
+}  
+  else  
+{  
+    $_SESSION['last_login_timestamp'] = time();  
+} 
+
 $con=mysqli_connect("localhost","root","","myhmsdb");
 $doctor = $_SESSION['dname'];
 if(isset($_GET['cancel']))

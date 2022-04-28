@@ -1,5 +1,16 @@
 <?php
 session_start();
+
+// if((time() - $_SESSION['last_login_timestamp']) > 60) // 900 = 15 * 60  
+// {  
+//     header("location:logout.php");  
+// }  
+//   else  
+// {  
+//     $_SESSION['last_login_timestamp'] = time();  
+// } 
+
+
 $con=mysqli_connect("localhost","root","","myhmsdb");
 if(isset($_POST['adsub'])){
 	$username=$_POST['username1'];
@@ -9,6 +20,8 @@ if(isset($_POST['adsub'])){
 	if(mysqli_num_rows($result)==1)
 	{
 		$_SESSION['username']=$username;
+		$_SESSION['last_login_timestamp'] = time(); 
+
 		header("Location:admin-panel1.php");
 	}
 	else

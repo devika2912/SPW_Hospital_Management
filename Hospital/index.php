@@ -1,7 +1,48 @@
+<?php
+session_start();
+
+
+if(isset($_SESSION["locked"])){
+  $difference = time() - $_SESSION["locked"];
+  if($difference > 10) {
+    unset($_SESSION["locked"]);
+    unset($_SESSION["login_attempts"]);
+  }
+}
+
+$con=mysqli_connect("localhost","root","","myhmsdb");
+if(isset($_POST['docsub1'])){
+	$dname=$_POST['username3'];
+	$dpass=$_POST['password3'];
+	$query="select * from doctb where username='$dname'";
+	$result=mysqli_query($con,$query);
+	if(mysqli_num_rows($result)==1)
+	{
+    while($row=mysqli_fetch_array($result,MYSQLI_ASSOC)){
+      $dbPass = base64_decode($row['password']);
+      if($dname == $row['username'] &&  $dpass == $dbPass){
+        $_SESSION['dname']=$row['username'];
+        $_SESSION['dpass']=$row['password'];
+        $_SESSION['last_login_timestamp'] = time();
+
+        header("Location:doctor-panel.php");
+      }else{
+        $_SESSION["login_attempts"] += 1;
+      }      
+    }
+	
+	}
+	else{
+    $_SESSION["login_attempts"] += 1;
+  }
+}
+
+
+?>
+
 <html>
 <head>
-	<title>HMS</title>
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
+	<title>HMS</title>nk rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
 <link rel="stylesheet" type="text/css" href="style1.css">
 <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
 <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
@@ -148,7 +189,7 @@ function checklen()
                             
                             <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                 <h3  class="register-heading">Login as Doctor</h3>
-                                <form method="post" action="func1.php">
+                                <form method="post" action="">
                                 <div class="row register-form">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -159,8 +200,14 @@ function checklen()
                                         <div class="form-group">
                                             <input type="password" class="form-control" placeholder="Password *" name="password3" required/>
                                         </div>
-                                        
-                                        <input type="submit" class="btnRegister" name="docsub1" value="Login"/>
+                                        <?php 
+                                            if($_SESSION["login_attempts"] > 2){
+                                            $_SESSION["locked"]=time();
+                                            echo "<p>Please wait for 10 seconds</p>";
+                                            } else {
+                                        ?>
+                                             <input type="submit" class="btnRegister" name="docsub1" value="Login"/>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </form>
