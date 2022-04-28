@@ -1,0 +1,2 @@
+# SPW_Hospital_Management
+In this project, I have provided various aspects of different security perspectives of the Hospital Management System  1]SSL certificate  2]SSL redirection  3]Site without SQL injection   4]Enable credential encryption in website/database.   5]Removing Cross-site scripting bugs (Reflected/Persistent)  6]Signup validation   7]Input validation  8]Brute forcing on Login page  9]Auto logout page 
